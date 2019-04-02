@@ -14,14 +14,14 @@ import (
 
 func main() {
 	// connect to the cluster
-	cluster := gocql.NewCluster("192.168.1.1", "192.168.1.2", "192.168.1.3")
+	cluster := gocql.NewCluster("10.244.0.170")
 	cluster.Keyspace = "example"
 	cluster.Consistency = gocql.Quorum
 	session, _ := cluster.CreateSession()
 	defer session.Close()
 
 	// insert a tweet
-	if err := session.Query(`INSERT INTO tweet (timeline, id, text) VALUES (?, ?, ?)`,
+	if err := session.Query(`INSERT INTO tweet (timeline, id, text) VALUES ( ? , ? , ? )`,
 		"me", gocql.TimeUUID(), "hello world").Exec(); err != nil {
 		log.Fatal(err)
 	}
