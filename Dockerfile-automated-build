@@ -1,0 +1,15 @@
+FROM premhashmap/cain-buildenv:latest as builder
+RUN mkdir -p $GOPATH/src/github.com/prem0132 && cd $GOPATH/src/github.com/prem0132 \
+    && git clone https://github.com/prem0132/hecuba.git && cd hecuba \
+    && dep ensure \
+    && make build
+
+FROM alpine:3.8
+RUN apk --no-cache add ca-certificates
+COPY --from=builder /go/src/github.com/prem0132/hecuba/bin/hecuba /usr/local/bin/hecuba
+RUN addgroup -g 1001 -S hecuba \
+    && adduser -u 1001 -D -S -G hecuba hecuba
+USER hecuba
+WORKDIR /home/hecuba
+CMD ["hecuba"]
+

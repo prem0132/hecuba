@@ -1,0 +1,7 @@
+FROM premhashmap/cain-buildenv:latest
+RUN mkdir -p $GOPATH/src/github.com/prem0132/hecuba && cd $GOPATH/src/github.com/prem0132/hecuba
+WORKDIR $GOPATH/src/github.com/prem0132/hecuba
+COPY . $GOPATH/src/github.com/prem0132/hecuba
+RUN dep ensure \
+    && make build
+CMD ["tail", "-f", "/dev/null"]

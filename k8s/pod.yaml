@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hecuba
+spec:
+      containers:
+      - name: hecuba
+        image: "premhashmap/golang-dev-env:hecuba"
+        imagePullPolicy: Always   
+      restartPolicy: OnFailure
