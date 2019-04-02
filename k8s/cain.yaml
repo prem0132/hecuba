@@ -1,0 +1,80 @@
+#
+# Copyright © 2016-2018 The Thingsboard Authors
+# Modifications © 2017-2018 Hashmap, Inc
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cain
+  labels:
+    app: cassandra
+    chart: cassandra-0.9.0
+    release: "cassandra"
+    heritage: "Tiller"
+---
+# Source: cassandra/templates/backup/rbac.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: cain
+  labels:
+    app: cassandra
+    chart: cassandra-0.9.0
+    release: "cassandra"
+    heritage: "Tiller"
+rules:
+- apiGroups: [""]
+  resources: ["pods", "pods/log"]
+  verbs: ["get", "list"]
+- apiGroups: [""]
+  resources: ["pods/exec"]
+  verbs: ["create"]
+---  
+apiVersion: v1
+kind: Pod
+metadata:
+  name: cain
+spec:
+  restartPolicy: OnFailure
+  serviceAccountName: cain
+  containers:
+  - name: cassandra-backup
+    image: "maorfr/cain:latest"
+    command: ["tail"]
+    args:
+    - -f
+    - /dev/null
+    env:
+    - name: AWS_REGION
+      value: ap-southeast-1
+    - name: AWS_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+            key: accesskey
+            name: aws
+    - name: AWS_SECRET_KEY
+      valueFrom:
+        secretKeyRef:
+            key: secretkey
+            name: aws
+    resources:
+        limits:
+          cpu: 1
+          memory: 1Gi
+        requests:
+          cpu: 1
+          memory: 1Gi
+
