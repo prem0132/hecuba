@@ -8,13 +8,14 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/gocql/gocql"
 )
 
 func main() {
 	// connect to the cluster
-	cluster := gocql.NewCluster("10.244.0.170")
+	cluster := gocql.NewCluster(os.Args[1])
 	cluster.Keyspace = "example"
 	cluster.Consistency = gocql.Quorum
 	session, _ := cluster.CreateSession()
