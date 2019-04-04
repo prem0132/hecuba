@@ -15,14 +15,18 @@ dev: build mac docker
 
 prod: bootstrap build mac docker push
 
-mac: 
-	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -ldflags $(LDFLAGS) -o $(GOPATH)/bin/hecuba $(GOPATH)/src/github.com/prem0132/hecuba/hecuba.go
+mac: fmt vet 
+	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -ldflags $(LDFLAGS) -o $(GOPATH)/bin/cain $(GOPATH)/src/github.com/prem0132/cain/cmd/cain.go
 
+fmt:
+	go fmt ./pkg/... ./cmd/...
 
-# Build hecuba binary
-build: 
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags $(LDFLAGS) -o bin/hecuba $(GOPATH)/src/github.com/prem0132/hecuba/hecuba.go
+vet:
+	go vet ./pkg/... ./cmd/...
 
+# Build cain binary
+build: fmt vet
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags $(LDFLAGS) -o bin/cain $(GOPATH)/src/github.com/prem0132/cain/cmd/cain.go
 
 # Build hecuba docker image
 docker:

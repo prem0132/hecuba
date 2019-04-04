@@ -25,4 +25,4 @@ dockers:
 - binary: hecuba
   dockerfile: Dockerfile
   image_templates:
-  - "maorfr/{{.ProjectName}}:{{ .Tag }}"
+  - "prem0132/{{.ProjectName}}:{{ .Tag }}"
